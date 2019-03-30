@@ -1,0 +1,1 @@
+from mr_streams.streamer import Streamer as stream

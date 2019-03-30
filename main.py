@@ -2,8 +2,6 @@ from functools import partial
 import pprint
 
 pp = pprint.PrettyPrinter()
-
-
 class Streams():
     def __init__(self, source = None):
         self.source = source
@@ -23,12 +21,21 @@ class Streams():
         self.str.append((_tap, fn, args, kwargs))
         return self
 
+    def take(self, n, *args, **kwargs):
+        def _take(iterable,*args, **kwargs):
+            for x in range(n):
+                yield next(iterable)
+        self.str.append((_take, n, args, kwargs))
+        return self
+
     def filter(self, fn, *args, **kwargs):
         self.str.append((filter, fn, args, kwargs))
         return self
 
-    def attach(self, data):
-        self.str = self.__build(data)
+    def attach(self, iterable_data):
+        self.source = iterable_data
+        self.bound_pipeline = self.__build(self.source)
+        return self
 
     def __build(self, data):
         structure = iter(data)
@@ -57,3 +64,10 @@ class Streams():
     def __str__(self):
         return pprint.pformat(self.str)
 
+s = Streams()
+
+pipeline = s.map(lambda x: x + 1).filter(lambda x: x%2 == 0).tap(print).take(2)
+pipeline.attach(range(20))
+
+for x in pipeline:
+    pass

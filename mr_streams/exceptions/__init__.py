@@ -1,2 +1,1 @@
-import mr_streams.exceptions.stream_exceptions as stream_exceptions
-IllegalStreamOperationException = stream_exceptions.IllegalStreamOperationException
+from mr_streams.exceptions.stream_exceptions import IllegalStreamOperationException as IllegalStreamOperationException

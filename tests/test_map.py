@@ -31,3 +31,4 @@ class TestMapFunction(unittest.TestCase):
 
         _ = ms.stream([1,2,3,4]).map(add, 1)
         _.drain()
+

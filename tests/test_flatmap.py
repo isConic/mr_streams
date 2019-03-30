@@ -34,3 +34,4 @@ class TestMisc(unittest.TestCase):
         _.drain()
         _ = ms.stream([1, 2, 3, 4, 5]).flatmap(repeat_n_times, n = 2)
         _.drain()
+

@@ -84,5 +84,6 @@ class Streamer:
         for _ in self.structure:
             continue
 
+
 if __name__ == "__main__":
     pass

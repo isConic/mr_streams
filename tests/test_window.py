@@ -39,3 +39,13 @@ class TestWindow(unittest.TestCase):
         expected = [(0, 1), (3, 4), (6, 7), (9)]
 
         assert computed == expected
+
+    def test_assumptions_about_list_equality(self):
+        a = [1,2,3,4]
+        b = [1,2,3,4]
+        assert a == b
+
+        a = [(1,1), (2,2), (3,3)]
+        b = [(1,1), (2,2), (3,3)]
+        assert a == b
+

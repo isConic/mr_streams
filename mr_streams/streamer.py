@@ -23,9 +23,26 @@ class Streamer:
             return _obj
         else:
             raise StopIteration
-
     def _flatten(self, _generator,_function):
         yield from (y for x in _generator for y in _function(x))
+
+
+    def _chunk(self, iterable, n = 1):
+        values_remaining = True
+        while values_remaining == True:
+            temp_cache = []
+            for _ in range(n):
+                next_val = next(iterable, self.eol)
+                if next_val is not self.eol:
+                    temp_cache.append(next_val)
+                else:
+                    values_remaining = False
+                    break
+            yield temp_cache
+
+    def chunk(self,n):
+        chunk_n = partial(self._chunk, n = n)
+        return self._build(chunk_n(self.structure))
 
     def map(self, _function, *args, **kwargs):
         _curried_function = partial(_function, *args, **kwargs)

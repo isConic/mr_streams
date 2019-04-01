@@ -70,6 +70,14 @@ class Streamer:
         _curried_function = partial(_function, *args, **kwargs)
         return self._build(filter(_curried_function, self.structure))
 
+
+    def _identity(self):
+        return self
+
+    def window(self, n = 1, stride = 1):
+        #TODO: Implement window function
+        return self._identity()
+
     def tap(self, _function, *args, **kwargs):
         def _tap(function, iterable):
             for x in iterable:

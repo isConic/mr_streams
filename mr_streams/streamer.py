@@ -1,5 +1,6 @@
 from functools import partial, reduce
 from  mr_streams.exceptions import IllegalStreamOperationException
+from itertools import islice
 
 class EOL():
     pass
@@ -74,9 +75,19 @@ class Streamer:
     def _identity(self):
         return self
 
-    def window(self, n = 1, stride = 1):
-        #TODO: Implement window function
-        return self._identity()
+    def _window(self, seq, n=2, *args, **kwargs):
+        "Returns a sliding window (of width n) over data from the iterable"
+        "   s -> (s0,s1,...s[n-1]), (s1,s2,...,sn), ...                   "
+        it = iter(seq)
+        result = tuple(islice(it, n))
+        if len(result) == n:
+            yield result
+        for elem in it:
+            result = result[1:] + (elem,)
+            yield result
+
+    def window(self,n = 2,stride = 1):
+        return self._build(self._window(iter(self.structure), n = n))
 
     def tap(self, _function, *args, **kwargs):
         def _tap(function, iterable):

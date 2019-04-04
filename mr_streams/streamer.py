@@ -71,6 +71,15 @@ class Streamer:
         _curried_function = partial(_function, *args, **kwargs)
         return self._build(filter(_curried_function, self.structure))
 
+    def _skip(self, iterable, n):
+        counter = 0
+        for x in iterable:
+            if counter % n == 0:
+                yield x
+            counter = counter + 1
+
+    def skip(self, n):
+        return self._build(self._skip(self.structure, n = n))
 
     def _identity(self):
         return self
@@ -87,8 +96,8 @@ class Streamer:
             yield result
 
     def window(self,n = 2,stride = 1):
-        return self._build(self._window(iter(self.structure), n = n))
-
+        ph =  self._build(self._window(iter(self.structure), n = n + stride))
+        return ph
     def tap(self, _function, *args, **kwargs):
         def _tap(function, iterable):
             for x in iterable:
@@ -122,4 +131,4 @@ class Streamer:
 
 
 if __name__ == "__main__":
-    pass
+    Streamer(range(20)).window(n = 2,stride= 4).tap(print).drain()

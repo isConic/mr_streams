@@ -131,4 +131,4 @@ class Streamer:
 
 
 if __name__ == "__main__":
-    Streamer(range(20)).window(n = 2,stride= 4).tap(print).drain()
+    pass

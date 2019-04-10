@@ -1,6 +1,8 @@
 from functools import partial, reduce
 from  mr_streams.exceptions import IllegalStreamOperationException
 from itertools import islice
+from time import time
+
 
 class EOL():
     pass
@@ -129,6 +131,15 @@ class Streamer:
         for _ in self.structure:
             continue
 
+    def emission_rate_limiter(self, t = 0):
+        def x(iterable):
+            t1 = time()
+            for v in iterable:
+                t2 = time()
+                if t2 - t1 > t:
+                    t1 = t2
+                    yield v
+        return self._build(x(self.structure))
 
 if __name__ == "__main__":
-    pass
+    

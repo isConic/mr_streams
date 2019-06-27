@@ -100,6 +100,7 @@ class Streamer:
     def window(self,n = 2,stride = 1):
         ph =  self._build(self._window(iter(self.structure), n = n + stride))
         return ph
+
     def tap(self, _function, *args, **kwargs):
         def _tap(function, iterable):
             for x in iterable:
@@ -131,7 +132,21 @@ class Streamer:
         for _ in self.structure:
             continue
 
-    def emission_rate_limiter(self, t = 0):
+    def rate_limited(self, t = 0):
+        """ Drains a stream and only emits an object after N seconds has elapsed.
+
+        Useful in real-time streams where data loss is tolerable. For example frames
+        from a webcam. Processing can often happen slower than the acquisition of a frame.
+        Instead of backing up the queue with unprocessed frames it makes more sense to sample
+        every K seconds(where K > t)  and drop the rest of the frames.
+
+        Args:
+            t: time to wait before an emitted item is re-sampled.
+
+        Returns:
+            Streamer
+
+        """
         def x(iterable):
             t1 = time()
             for v in iterable:
@@ -141,5 +156,7 @@ class Streamer:
                     yield v
         return self._build(x(self.structure))
 
+
 if __name__ == "__main__":
-    
+    add = lambda a,b: a + b
+    Streamer(range(10000)).map(add, 1).chunk(5).emission_rate_limiter(5)
